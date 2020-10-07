@@ -8,11 +8,9 @@ setup(name="seq_dbutils",
       packages=["seq_dbutils"],
       install_requires=["cryptography",
                         "pandas",
-                        "sqlalchemy",
+                        "SQLAlchemy",
                         "mysql-connector-python"],
       license="MIT",
       python_requires='>=3.6',
       url="https://github.com/BDI-pathogens/seq_dbutils",
-      test_suite='unittest',
-      tests_require=['sqlalchemy'],
-      )
+)

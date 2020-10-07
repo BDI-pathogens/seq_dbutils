@@ -12,4 +12,5 @@ setup(name="seq_dbutils",
                         "mysql-connector-python"],
       license="MIT",
       python_requires='>=3.6',
+      url="https://github.com/BDI-pathogens/seq_dbutils",
       )

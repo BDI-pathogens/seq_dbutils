@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install coverage codecov
+          pip install coverage codecov sqlalchemy
 
       - name: Run coverage
         run: |

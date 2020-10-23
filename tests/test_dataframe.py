@@ -1,10 +1,12 @@
 import logging
-import pandas as pd
-import seq_dbutils
 from datetime import datetime
-from mock import patch
 from os.path import abspath, dirname, join
 from unittest import TestCase
+
+import pandas as pd
+from mock import patch
+
+import seq_dbutils
 
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s:%(levelname)s:%(message)s")
 
@@ -89,66 +91,4 @@ class DataFrameUtilsTestClass(TestCase):
         df_expected = pd.DataFrame(data={'col1': ['a', 'b', 'c'],
                                          'rename_col2': [1, 2, 3]},
                                    columns=['col1', 'rename_col2'])
-        assert df_result.equals(df_expected)
-
-    @staticmethod
-    @patch('sqlalchemy.engine.Engine')
-    def test_add_prefixed_incremented_id_not_in_df_or_db(mock_engine):
-        table = 'mock_table'
-        id_name = 'lookup_id'
-        id_prefix = 'ID'
-        df = pd.DataFrame(data={'col1': ['a', 'b'],
-                                'col2': ['x', 'y']},
-                          columns=['col1', 'col2'])
-
-        mock_engine.execute().fetchone.return_value = None
-        df_result = seq_dbutils.DataFrameUtils.add_prefixed_incremented_id(mock_engine, df, table, id_name, id_prefix,
-                                                                           id_zero_padding=2)
-        df_expected = pd.DataFrame(data={'col1': ['a', 'b'],
-                                         'col2': ['x', 'y'],
-                                         id_name: [id_prefix + '01',
-                                                   id_prefix + '02']},
-                                   columns=['col1', 'col2', id_name])
-        assert df_result.equals(df_expected)
-
-    @staticmethod
-    @patch('sqlalchemy.engine')
-    def test_add_prefixed_incremented_id_exists_db(mock_engine):
-        table = 'mock_table'
-        id_name = 'lookup_id'
-        id_prefix = 'ID'
-        df = pd.DataFrame(data={'col1': ['a', 'b'],
-                                'col2': ['x', 'y']},
-                          columns=['col1', 'col2'])
-
-        mock_engine.execute().fetchone.return_value = [id_prefix + '05']
-        df_result = seq_dbutils.DataFrameUtils.add_prefixed_incremented_id(mock_engine, df, table, id_name, id_prefix,
-                                                                           id_zero_padding=2)
-        df_expected = pd.DataFrame(data={'col1': ['a', 'b'],
-                                         'col2': ['x', 'y'],
-                                         id_name: [id_prefix + '06',
-                                                   id_prefix + '07']},
-                                   columns=['col1', 'col2', id_name])
-        assert df_result.equals(df_expected)
-
-    @staticmethod
-    @patch('sqlalchemy.engine.Engine')
-    def test_add_prefixed_incremented_id_exists_df_and_db(mock_engine):
-        table = 'mock_table'
-        id_name = 'lookup_id'
-        id_prefix = 'ID'
-        df = pd.DataFrame(data={'col1': ['a', 'b'],
-                                'col2': ['x', 'y'],
-                                id_name: [id_prefix + '01',
-                                          None]},
-                          columns=['col1', 'col2', id_name])
-
-        mock_engine.execute().fetchone.return_value = [id_prefix + '05']
-        df_result = seq_dbutils.DataFrameUtils.add_prefixed_incremented_id(mock_engine, df, table, id_name, id_prefix,
-                                                                           id_zero_padding=2)
-        df_expected = pd.DataFrame(data={'col1': ['a', 'b'],
-                                         'col2': ['x', 'y'],
-                                         id_name: [id_prefix + '01',
-                                                   id_prefix + '06']},
-                                   columns=['col1', 'col2', id_name])
         assert df_result.equals(df_expected)

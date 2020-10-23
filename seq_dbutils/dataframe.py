@@ -1,5 +1,4 @@
 import logging
-import re
 import sys
 from datetime import datetime
 from os.path import isfile
@@ -10,32 +9,6 @@ logging.basicConfig(level=logging.DEBUG, format="%(asctime)s:%(levelname)s:%(mes
 
 
 class DataFrameUtils:
-
-    @staticmethod
-    def add_prefixed_incremented_id(engine, df_input, table_name, id_name, id_prefix, id_zero_padding=10):
-        if id_name in list(df_input):
-            df_with_id = df_input[~df_input[id_name].isnull()].copy()
-            df_no_id = df_input[df_input[id_name].isnull()].copy()
-            del df_no_id[id_name]
-        else:
-            df_with_id = pd.DataFrame()
-            df_no_id = df_input.copy()
-
-        pk_sql = f'SELECT {id_name} FROM {table_name} ORDER BY {id_name} DESC LIMIT 1;'
-        result = engine.execute(pk_sql).fetchone()
-        if result:
-            # Extract the integer
-            last_pk = int(re.sub(id_prefix, '', result[0]))
-            df_no_id.loc[:, '_id'] = range(last_pk + 1, len(df_no_id) + last_pk + 1)
-        else:
-            # Start at 1
-            df_no_id.loc[:, '_id'] = range(1, len(df_no_id) + 1)
-
-        df_no_id.loc[:, id_name] = df_no_id['_id'].apply(lambda x: id_prefix + str(x).zfill(id_zero_padding))
-        del df_no_id['_id']
-
-        df_out = pd.concat([df_with_id, df_no_id], sort=False)
-        return df_out
 
     @staticmethod
     def read_csv_with_header_mapping(csv_filepath, col_name_mapping_dict=None):

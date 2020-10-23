@@ -31,6 +31,8 @@ jobs:
         run: |
           cd tests
           coverage run --source=../seq_dbutils -m unittest discover
+          coverage report -m
+          coverage xml
 
       - name: Run codecov
         if: success()

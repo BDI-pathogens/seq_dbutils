@@ -73,8 +73,9 @@ class ArgsTestClass(TestCase):
         mock_error.assert_called_with("'ArgumentParser' object has no attribute 'config'")
 
     @staticmethod
+    @patch('argparse.ArgumentParser')
     @patch('seq_dbutils.config.Config.get_db_config')
-    def test_get_script_config(mock_get_db):
+    def test_get_script_config(mock_get_db, mock_args):
         my_str = 'mock'
         args = seq_dbutils.Args.initialize_args()
         mock_get_db.return_value = my_str, my_str, my_str, my_str
@@ -90,8 +91,9 @@ class ArgsTestClass(TestCase):
         assert not reporting
 
     @staticmethod
+    @patch('argparse.ArgumentParser')
     @patch('seq_dbutils.config.Config.get_db_config')
-    def test_get_extract_config(mock_get_db):
+    def test_get_extract_config(mock_get_db, mock_args):
         my_str = 'mock'
         args = seq_dbutils.Args.initialize_args()
         mock_get_db.return_value = my_str, my_str, my_str, my_str

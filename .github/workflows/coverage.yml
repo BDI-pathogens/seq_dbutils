@@ -28,7 +28,7 @@ jobs:
 
       - name: Run coverage
         run: |
-          coverage run -m unittest
+          coverage run --source=./seq_dbutils -m unittest discover
 
       - name: Run codecov
         if: success()

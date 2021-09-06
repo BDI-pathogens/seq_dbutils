@@ -2,9 +2,9 @@ name: Python 3.6 to 3.9
 
 on:
   push:
-    branches: [ py3.9 ]
+    branches: [ main ]
   pull_request:
-    branches: [ py3.9 ]
+    branches: [ main ]
 
 jobs:
   build:

@@ -5,7 +5,7 @@ from pathlib import Path
 
 from cryptography.fernet import Fernet
 
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s:%(levelname)s:%(message)s")
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 BIN_FILE = join(str(Path.home()), 'mysql_bytes.bin')
 

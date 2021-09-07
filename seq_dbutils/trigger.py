@@ -4,7 +4,7 @@ from os.path import join, isdir, isfile, splitext
 
 from seq_dbutils.connection import Connection
 
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s:%(levelname)s:%(message)s")
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 class Trigger:

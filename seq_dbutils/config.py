@@ -3,7 +3,7 @@ import os
 import sys
 from configparser import ConfigParser
 
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s:%(levelname)s:%(message)s")
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 class Config:
@@ -21,17 +21,9 @@ class Config:
         return cls.configParser.get(required_section, required_key)
 
     @staticmethod
-    def get_yn_boolean(commit):
-        commit_bool = False
-        if commit == 'Y':
-            commit_bool = True
-        return commit_bool
-
-    @staticmethod
-    def get_db_config(args):
-        assert args
+    def get_db_config(required_section):
+        assert required_section
         try:
-            required_section = args.config[0]
             logging.info(f"Extracting config for '{required_section}'")
             user = Config.get_section_config(required_section, 'user')
             key = Config.get_section_config(required_section, 'key').encode()
@@ -42,19 +34,3 @@ class Config:
         except Exception as ex:
             logging.error(str(ex))
             sys.exit(1)
-
-    @staticmethod
-    def get_script_config(args):
-        assert args
-        user, key, host, db = Config.get_db_config(args)
-        commit = args.commit if 'commit' in args else None
-        filepath = args.filepath if 'filepath' in args else None
-        reporting = args.reporting if 'reporting' in args else None
-        return user, key, host, db, commit, filepath, reporting
-
-    @staticmethod
-    def get_extract_config(args):
-        assert args
-        user, key, host, db = Config.get_db_config(args)
-        reporting = args.reporting if 'reporting' in args else None
-        return user, key, host, db, reporting

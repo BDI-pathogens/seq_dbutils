@@ -5,7 +5,7 @@ from unittest import TestCase
 import seq_dbutils
 from mock import patch
 
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s:%(levelname)s:%(message)s")
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 THIS_DIR = dirname(abspath(__file__))
 DATA_DIR = join(THIS_DIR, 'data')

@@ -5,15 +5,15 @@ from os.path import isfile
 
 import pandas as pd
 
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s:%(levelname)s:%(message)s")
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 class DataFrameUtils:
 
     @staticmethod
-    def read_csv_with_header_mapping(csv_filepath, col_name_mapping_dict=None):
+    def read_csv_with_header_mapping(csv_filepath, sep=',', col_name_mapping_dict=None):
         if isfile(csv_filepath):
-            df = pd.read_csv(csv_filepath, header='infer', low_memory=False)
+            df = pd.read_csv(csv_filepath, sep=sep, header='infer', low_memory=False)
             logging.info(f'Read file {csv_filepath} with lines: %s', len(df))
             if col_name_mapping_dict:
                 df.rename(columns=col_name_mapping_dict, inplace=True)

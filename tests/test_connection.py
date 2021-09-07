@@ -4,7 +4,7 @@ from unittest import TestCase
 import seq_dbutils
 from mock import patch, Mock
 
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s:%(levelname)s:%(message)s")
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 class ConnectionTestClass(TestCase):

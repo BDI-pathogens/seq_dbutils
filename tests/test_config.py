@@ -56,6 +56,5 @@ class ArgsTestClass(TestCase):
     @patch('sys.exit')
     @patch('logging.error')
     def test_get_db_config_fail(mock_error, mock_exit):
-        parser = argparse.ArgumentParser()
-        seq_dbutils.Config.get_db_config(parser)
-        mock_error.assert_called_with("'ArgumentParser' object has no attribute 'config'")
+        seq_dbutils.Config.get_db_config('error')
+        mock_error.assert_called_with("No section: 'error'")

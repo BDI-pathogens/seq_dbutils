@@ -1,6 +1,6 @@
 from .args import Args  # noqa
 from .config import Config  # noqa
-from .connection import Connection  # noqa
+from .database import Database  # noqa
 from .dataframe import DataFrameUtils  # noqa
 from .decrypt import Decrypt  # noqa
 from .encrypt import Encrypt  # noqa

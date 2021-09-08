@@ -17,5 +17,4 @@ class ArgsTestClass(TestCase):
     @patch('argparse.ArgumentParser')
     def test_initialize(cls, mock_args):
         seq_dbutils.Args.initialize_args()
-        print(len(mock_args.mock_calls))
         assert len(mock_args.mock_calls) == 2

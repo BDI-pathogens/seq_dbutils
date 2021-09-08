@@ -2,7 +2,7 @@ import logging
 import sys
 from os.path import join, isdir, isfile
 
-from seq_dbutils.connection import Connection
+from seq_dbutils.database import Database
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -18,6 +18,7 @@ class View:
         self.session_instance = session_instance
         self.commit = commit
 
+    # TODO: Move view_name to init?
     def drop_and_create_view(self, view_name):
         self.drop_view_if_exists(view_name)
         self.create_view(view_name)

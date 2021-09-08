@@ -6,7 +6,7 @@ import sqlalchemy
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
-class Connection:
+class Database:
 
     def __init__(self, user, pwd, host, db):
         assert isinstance(user, str)

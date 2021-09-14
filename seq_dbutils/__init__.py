@@ -4,6 +4,6 @@ from .database import Database  # noqa
 from .dataframe import DataFrameUtils  # noqa
 from .decrypt import Decrypt  # noqa
 from .encrypt import Encrypt  # noqa
-from .table import Table, TableUtils  # noqa
+from .table import Table  # noqa
 from .trigger import Trigger  # noqa
 from .view import View  # noqa

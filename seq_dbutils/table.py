@@ -1,9 +1,7 @@
 import logging
-import re
 import sys
 
 import pandas as pd
-from sqlalchemy.engine import Engine
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 

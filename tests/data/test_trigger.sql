@@ -1,3 +1,3 @@
-CREATE TRIGGER test_create_trigger_ok
+CREATE TRIGGER test_trigger
 BEFORE UPDATE ON Pt
   FOR EACH ROW SET NEW.modified = CURRENT_TIMESTAMP;

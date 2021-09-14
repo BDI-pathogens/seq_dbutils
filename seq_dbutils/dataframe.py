@@ -40,15 +40,3 @@ class DataFrameUtils:
         else:
             input_date = None
         return input_date
-
-    @staticmethod
-    def remove_rows_with_blank_col_subset(df, col_list):
-        assert isinstance(col_list, list)
-        df_subset = df.filter(col_list, axis=1)
-        df_na_subset = df_subset[pd.isnull(df_subset).all(axis=1)]
-        if not df_na_subset.empty:
-            df_no_nas = df.dropna(subset=col_list, how='all')
-            df_no_nas.reset_index(inplace=True, drop=True)
-        else:
-            df_no_nas = df.copy()
-        return df_no_nas

@@ -1,6 +1,5 @@
 import logging
-import sys
-from os.path import join, isdir, isfile, splitext, basename
+from os.path import isfile, splitext, basename
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 

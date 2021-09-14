@@ -5,15 +5,15 @@ from os.path import isfile
 
 import pandas as pd
 
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s:%(levelname)s:%(message)s")
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 class DataFrameUtils:
 
     @staticmethod
-    def read_csv_with_header_mapping(csv_filepath, col_name_mapping_dict=None):
+    def read_csv_with_header_mapping(csv_filepath, sep=',', col_name_mapping_dict=None):
         if isfile(csv_filepath):
-            df = pd.read_csv(csv_filepath, header='infer', low_memory=False)
+            df = pd.read_csv(csv_filepath, sep=sep, header='infer', low_memory=False)
             logging.info(f'Read file {csv_filepath} with lines: %s', len(df))
             if col_name_mapping_dict:
                 df.rename(columns=col_name_mapping_dict, inplace=True)
@@ -42,13 +42,26 @@ class DataFrameUtils:
         return input_date
 
     @staticmethod
-    def remove_rows_with_blank_col_subset(df, col_list):
-        assert isinstance(col_list, list)
-        df_subset = df.filter(col_list, axis=1)
-        df_na_subset = df_subset[pd.isnull(df_subset).all(axis=1)]
-        if not df_na_subset.empty:
-            df_no_nas = df.dropna(subset=col_list, how='all')
-            df_no_nas.reset_index(inplace=True, drop=True)
-        else:
-            df_no_nas = df.copy()
-        return df_no_nas
+    def format_date_cols(df, date_col_list):
+        for date_col in date_col_list:
+            if date_col in df.columns:
+                df[date_col] = df[date_col].apply(
+                    lambda x: DataFrameUtils.apply_date_format(str(x), '%Y-%m-%d') if x else None)
+        return df
+
+    @staticmethod
+    def add_dob_month_col(df, dob_date_col='dob'):
+        if 'dob_month' not in list(df):
+            df['dob_month'] = df[dob_date_col].apply(lambda x: x.month)
+        return df
+
+    @staticmethod
+    def add_dob_year_col(df, dob_date_col='dob'):
+        if 'dob_year' not in list(df):
+            df['dob_year'] = df[dob_date_col].apply(lambda x: x.year)
+        return df
+
+    @staticmethod
+    def replace_nan_with_none(df):
+        df = df.where(pd.notnull(df), None)
+        return df

@@ -3,7 +3,7 @@ import sys
 
 import sqlalchemy
 
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s:%(levelname)s:%(message)s")
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 class Connection:
@@ -27,11 +27,3 @@ class Connection:
         except Exception as ex:
             logging.error(str(ex))
             sys.exit(1)
-
-    @staticmethod
-    def commit_changes(session_instance, commit):
-        if commit:
-            session_instance.commit()
-            logging.info('Changes committed')
-        else:
-            logging.info('Changes NOT committed')

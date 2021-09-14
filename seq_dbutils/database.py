@@ -1,32 +1,24 @@
 import logging
-import sys
-
-import sqlalchemy
+import pandas as pd
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 class Database:
 
-    def __init__(self, user, pwd, host, db):
-        assert isinstance(user, str)
-        assert isinstance(pwd, str)
-        assert isinstance(host, str)
-        assert isinstance(db, str)
-        self.user = user
-        self.pwd = pwd
-        self.host = host
-        self.db = db
+    @staticmethod
+    def get_db_table_col_list(engine, tablename):
+        df_db_table_cols = pd.read_sql(f'SHOW COLUMNS FROM {tablename};', engine)
+        db_table_col_list = df_db_table_cols['Field'].tolist()
+        return db_table_col_list
 
-    def create_sql_engine(self, sql_logging=False):
-        try:
-            logging.info(f'Connecting to {self.db} on host {self.host}')
-            conn_str = f'mysql+mysqlconnector://{self.user}:{self.pwd}@{self.host}/{self.db}'
-            sql_engine = sqlalchemy.create_engine(conn_str, echo=sql_logging)
-            return sql_engine
-        except Exception as ex:
-            logging.error(str(ex))
-            sys.exit(1)
+    @staticmethod
+    def create_db_table_dataframe(df, engine, tablename):
+        db_table_col_list = Database.get_db_table_col_list(engine, tablename)
+        df_db_table = df.filter(db_table_col_list, axis=1)
+        df_db_table = df_db_table.dropna(subset=df_db_table.columns, how='all')
+        logging.info(f"'{tablename}' rows to load: {len(df_db_table)}")
+        return df_db_table
 
     @staticmethod
     def commit_changes(session_instance, commit):

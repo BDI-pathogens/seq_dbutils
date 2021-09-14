@@ -40,3 +40,28 @@ class DataFrameUtils:
         else:
             input_date = None
         return input_date
+
+    @staticmethod
+    def format_date_cols(df, date_col_list):
+        for date_col in date_col_list:
+            if date_col in df.columns:
+                df[date_col] = df[date_col].apply(
+                    lambda x: DataFrameUtils.apply_date_format(str(x), '%Y-%m-%d') if x else None)
+        return df
+
+    @staticmethod
+    def add_dob_month_col(df, dob_date_col='dob'):
+        if 'dob_month' not in list(df):
+            df['dob_month'] = df[dob_date_col].apply(lambda x: x.month)
+        return df
+
+    @staticmethod
+    def add_dob_year_col(df, dob_date_col='dob'):
+        if 'dob_year' not in list(df):
+            df['dob_year'] = df[dob_date_col].apply(lambda x: x.year)
+        return df
+
+    @staticmethod
+    def replace_nan_with_none(df):
+        df = df.where(pd.notnull(df), None)
+        return df

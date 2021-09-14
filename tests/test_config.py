@@ -55,6 +55,7 @@ class ArgsTestClass(TestCase):
     @staticmethod
     @patch('sys.exit')
     @patch('logging.error')
-    def test_get_db_config_fail(mock_error, mock_exit):
+    @patch('logging.info')
+    def test_get_db_config_fail(mock_info, mock_error, mock_exit):
         seq_dbutils.Config.get_db_config('error')
         mock_error.assert_called_with("No section: 'error'")

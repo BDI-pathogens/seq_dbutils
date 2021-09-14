@@ -7,23 +7,7 @@ from mock import patch, Mock
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
-class DatabaseTestClass(TestCase):
-
-    @staticmethod
-    @patch('logging.info')
-    @patch('sqlalchemy.orm.sessionmaker')
-    def test_commit_changes_false(mock_session, mock_info):
-        mock_instance = mock_session()
-        seq_dbutils.Database.commit_changes(mock_instance, False)
-        mock_info.assert_called_with('Changes NOT committed')
-
-    @staticmethod
-    @patch('logging.info')
-    @patch('sqlalchemy.orm.sessionmaker')
-    def test_commit_changes_true(mock_session, mock_info):
-        mock_instance = mock_session()
-        seq_dbutils.Database.commit_changes(mock_instance, True)
-        mock_info.assert_called_with('Changes committed')
+class ConnectionTestClass(TestCase):
 
     @patch('logging.info')
     @patch('sqlalchemy.create_engine')
@@ -32,7 +16,7 @@ class DatabaseTestClass(TestCase):
         pwd = 'password'
         host = 'myhost'
         db = 'mydb'
-        connection = seq_dbutils.Database(user, pwd, host, db)
+        connection = seq_dbutils.Connection(user, pwd, host, db)
         connection.create_sql_engine()
         mock_info.assert_called_with(f'Connecting to {db} on host {host}')
         mock_create.assert_called_once()
@@ -47,6 +31,6 @@ class DatabaseTestClass(TestCase):
         host = 'myhost'
         db = 'mydb'
         mock_create.side_effect = Mock(side_effect=Exception('Test exception'))
-        connection = seq_dbutils.Database(user, pwd, host, db)
+        connection = seq_dbutils.Connection(user, pwd, host, db)
         connection.create_sql_engine()
         mock_error.assert_called_with('Test exception')

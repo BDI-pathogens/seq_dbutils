@@ -16,32 +16,6 @@ DATA_DIR = join(THIS_DIR, 'data')
 
 class DataFrameUtilsTestClass(TestCase):
 
-    @staticmethod
-    def test_remove_rows_with_blank_col_subset_ok():
-        df = pd.DataFrame(data={'id1': ['a', None, 'c'],
-                                'id2': ['d', None, 'f'],
-                                'id3': ['g', 'h', 'i']},
-                          columns=['id1', 'id2', 'id3'])
-        df_result = seq_dbutils.DataFrameUtils.remove_rows_with_blank_col_subset(df, ['id1', 'id2'])
-        df_expected = pd.DataFrame(data={'id1': ['a', 'c'],
-                                         'id2': ['d', 'f'],
-                                         'id3': ['g', 'i']},
-                                   columns=['id1', 'id2', 'id3'])
-        assert df_result.equals(df_expected)
-
-    @staticmethod
-    def test_remove_rows_with_blank_col_subset_no_action():
-        df = pd.DataFrame(data={'id1': ['a', 'b', 'c'],
-                                'id2': ['d', 'b', 'f'],
-                                'id3': ['g', 'h', 'i']},
-                          columns=['id1', 'id2', 'id3'])
-        df_result = seq_dbutils.DataFrameUtils.remove_rows_with_blank_col_subset(df, ['id1', 'id2'])
-        assert df_result.equals(df)
-
-    def test_apply_date_format_dash(self):
-        result = seq_dbutils.DataFrameUtils.apply_date_format('-', '%Y-%m-%d')
-        self.assertIsNone(result)
-
     def test_apply_date_format_value_blank(self):
         result = seq_dbutils.DataFrameUtils.apply_date_format(None, '%Y-%m-%d')
         self.assertIsNone(result)

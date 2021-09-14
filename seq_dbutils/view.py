@@ -20,13 +20,11 @@ class View:
         self.create_view()
 
     def drop_view_if_exists(self):
-        logging.info(f'Dropping view {self.view_name}')
         drop_sql = f'DROP VIEW IF EXISTS {self.view_name};'
         logging.info(drop_sql)
         self.session_instance.execute(drop_sql)
 
     def create_view(self):
-        logging.info(f'Creating view {self.view_name}')
         with open(self.view_filepath, 'r') as reader:
             create_sql = reader.read()
             create_sql = f'CREATE VIEW {self.view_name} AS \n' + create_sql

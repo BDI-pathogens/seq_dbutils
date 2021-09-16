@@ -37,16 +37,16 @@ jobs:
 #          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 #        run: |
 #          codecov
-
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
+#
+#      - name: Dump GitHub context
+#        env:
+#          GITHUB_CONTEXT: ${{ toJson(github) }}
+#        run: echo "$GITHUB_CONTEXT"
 
       - name: Generate Report
         run: |
-          pip install coverage
+#          pip install coverage
           coverage run -m unittest
-      - name: Upload Coverage to Codecov
-        uses: codecov/codecov-action@v1
-        with:
+#      - name: Upload Coverage to Codecov
+#        uses: codecov/codecov-action@v1
+#        with:

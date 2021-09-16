@@ -26,8 +26,7 @@ jobs:
 
       - name: Run coverage
         run: |
-          cd tests
-          coverage run -m unittest discover
+          coverage run --source seq_dbutils -m unittest discover
           coverage report -m
           coverage xml
 

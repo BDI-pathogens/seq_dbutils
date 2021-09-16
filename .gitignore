@@ -92,3 +92,4 @@ fabric.properties
 *.pyc
 seq_dbutils.egg-info/
 venv/
+*cov*

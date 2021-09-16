@@ -29,7 +29,8 @@ jobs:
           cd tests
 #          coverage run -m unittest
 #          coverage report -m
-          coverage run -m unittest tests/*.py && coverage report -m
+          coverage run -m unittest tests/*.py
+          coverage report -m
           coverage xml
 
 #      - name: Run codecov

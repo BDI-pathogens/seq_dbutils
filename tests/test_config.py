@@ -1,10 +1,10 @@
-import argparse
 import logging
 from os.path import abspath, dirname, join
 from unittest import TestCase
 
-import seq_dbutils
 from mock import patch
+
+import seq_dbutils
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 

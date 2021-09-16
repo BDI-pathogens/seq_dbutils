@@ -24,13 +24,13 @@ jobs:
           pip install coverage codecov mock
           pip install --use-feature=in-tree-build .
 
-#      - name: Run coverage
-#        run: |
-#          cd tests
-#          coverage run -m unittest discover
-#          coverage report -m
-#          coverage xml
-#
+      - name: Run coverage
+        run: |
+          cd tests
+          coverage run -m unittest
+          coverage report -m
+          coverage xml
+
 #      - name: Run codecov
 #        if: success()
 #        env:
@@ -42,11 +42,3 @@ jobs:
 #        env:
 #          GITHUB_CONTEXT: ${{ toJson(github) }}
 #        run: echo "$GITHUB_CONTEXT"
-
-      - name: Generate Report
-        run: |
-#          pip install coverage
-          coverage run -m unittest
-#      - name: Upload Coverage to Codecov
-#        uses: codecov/codecov-action@v1
-#        with:

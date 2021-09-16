@@ -5,7 +5,7 @@ from unittest import TestCase
 
 import numpy as np
 import pandas as pd
-from mock import patch
+from mock import patch, call
 
 import seq_dbutils
 
@@ -87,16 +87,14 @@ class DataFrameUtilsTestClass(TestCase):
         assert df_result.equals(df_expected)
 
     @staticmethod
-    def test_format_date_cols():
+    @patch('seq_dbutils.DataFrameUtils.apply_date_format')
+    def test_format_date_cols(mock_apply):
         df = pd.DataFrame(data={'col1': ['a', 'b'],
                                 'col2': ['2021-09-16', '2021-09-17']},
                           columns=['col1', 'col2'])
         date_col_list = ['col2']
-        df_result = seq_dbutils.DataFrameUtils.format_date_cols(df, date_col_list)
-        df_expected = pd.DataFrame(data={'col1': ['a', 'b'],
-                                         'col2': [datetime.date(2021, 9, 16), datetime.date(2021, 9, 17)]},
-                                   columns=['col1', 'col2'])
-        assert df_result.equals(df_expected)
+        seq_dbutils.DataFrameUtils.format_date_cols(df, date_col_list)
+        mock_apply.assert_has_calls([call('2021-09-16', '%Y-%m-%d'), call('2021-09-17', '%Y-%m-%d')])
 
     @staticmethod
     def test_format_date_cols_no_date_col():

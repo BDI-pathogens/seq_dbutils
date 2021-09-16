@@ -3,9 +3,8 @@ from os.path import abspath, dirname, join
 from unittest import TestCase
 
 import pandas as pd
-from mock import patch, Mock, MagicMock
+from mock import patch, Mock
 from sqlalchemy import Column, String, Float
-from sqlalchemy.engine import Engine
 from sqlalchemy.ext.declarative import declarative_base
 
 import seq_dbutils

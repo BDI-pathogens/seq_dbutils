@@ -22,7 +22,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install coverage codecov mock
-#          pip install .
+          pip install --use-feature=in-tree-build .
 
       - name: Run coverage
         run: |

@@ -94,3 +94,4 @@ seq_dbutils.egg-info/
 venv/
 *cov*
 build/
+requirements.txt

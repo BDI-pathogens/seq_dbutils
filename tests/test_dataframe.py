@@ -159,5 +159,5 @@ class DataFrameUtilsTestClass(TestCase):
         df_expected = pd.DataFrame(data={'col1': ['a', 'b', None],
                                          'col2': [1, None, 3]},
                                    columns=['col1', 'col2'])
-        df_expected['col2'] = df_expected['col2']
+        df_expected['col2'] = df_expected['col2'].astype(object)
         assert df_result.equals(df_expected)

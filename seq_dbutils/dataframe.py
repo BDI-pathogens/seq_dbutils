@@ -63,5 +63,6 @@ class DataFrameUtils:
 
     @staticmethod
     def replace_nan_with_none(df):
+        df = df.astype(object)
         df = df.where(pd.notnull(df), None)
         return df

@@ -5,7 +5,7 @@ from unittest import TestCase
 import pandas as pd
 from mock import patch, Mock
 from sqlalchemy import Column, String, Float
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 
 import seq_dbutils
 

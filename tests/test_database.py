@@ -1,10 +1,10 @@
 import logging
 from unittest import TestCase
 
-import pandas as pd
-from mock import patch, Mock
+from mock import patch
+from mock_alchemy.mocking import AlchemyMagicMock
 
-import seq_dbutils
+from seq_dbutils import Database
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -13,33 +13,26 @@ class DatabaseTestClass(TestCase):
 
     @staticmethod
     @patch('logging.info')
-    @patch('sqlalchemy.orm.sessionmaker')
-    def test_commit_changes_false(mock_session, mock_info):
-        mock_instance = mock_session()
-        seq_dbutils.Database.commit_changes(mock_instance, False)
+    def test_log_and_execute_sql(mock_info):
+        sql = 'SELECT * FROM test;'
+        mock_session = AlchemyMagicMock()
+        Database(mock_session).log_and_execute_sql(sql)
+        mock_info.assert_called_with(sql)
+        mock_session.execute.assert_called_with(sql)
+        mock_session.execute.assert_called_once()
+
+    @staticmethod
+    @patch('logging.info')
+    def test_commit_changes_false(mock_info):
+        mock_instance = AlchemyMagicMock()
+        Database(mock_instance).commit_changes(False)
         mock_info.assert_called_with('Changes NOT committed')
+        mock_instance.commit.assert_not_called()
 
     @staticmethod
     @patch('logging.info')
-    @patch('sqlalchemy.orm.sessionmaker')
-    def test_commit_changes_true(mock_session, mock_info):
-        mock_instance = mock_session()
-        seq_dbutils.Database.commit_changes(mock_instance, True)
+    def test_commit_changes_true(mock_info):
+        mock_instance = AlchemyMagicMock()
+        Database(mock_instance).commit_changes(True)
         mock_info.assert_called_with('Changes committed')
-
-    @staticmethod
-    @patch('pandas.read_sql')
-    @patch('sqlalchemy.engine.Engine')
-    def test_get_db_table_col_list(mock_engine, mock_sql):
-        seq_dbutils.Database.get_db_table_col_list(mock_engine, 'Test')
-        mock_sql.assert_called_with(f'SHOW COLUMNS FROM Test;', mock_engine)
-
-    @staticmethod
-    @patch('logging.info')
-    @patch('seq_dbutils.Database.get_db_table_col_list')
-    @patch('sqlalchemy.engine.Engine')
-    def test_create_db_table_dataframe(mock_engine, mock_get, mock_info):
-        df = pd.DataFrame()
-        seq_dbutils.Database.create_db_table_dataframe(df, mock_engine, 'Test')
-        mock_get.assert_called_once()
-        mock_info.assert_called_with("'Test' rows to load: 0")
+        mock_instance.commit.assert_called_once()

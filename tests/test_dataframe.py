@@ -3,30 +3,29 @@ import logging
 from os.path import abspath, dirname, join
 from unittest import TestCase
 
-import numpy as np
 import pandas as pd
 from mock import patch, call
+from mock_alchemy.mocking import AlchemyMagicMock
 
-import seq_dbutils
+from seq_dbutils import DataFrameUtils
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
-THIS_DIR = dirname(abspath(__file__))
-DATA_DIR = join(THIS_DIR, 'data')
+DATA_DIR = join(dirname(abspath(__file__)), 'data')
 
 
 class DataFrameUtilsTestClass(TestCase):
 
     def test_apply_date_format_value_blank(self):
-        result = seq_dbutils.DataFrameUtils.apply_date_format(None, '%Y-%m-%d')
+        result = DataFrameUtils.apply_date_format(None, '%Y-%m-%d')
         self.assertIsNone(result)
 
     @staticmethod
     def test_apply_date_format_ok():
-        input_date = '2020-09-18'
+        input_date = '2023-10-25'
         date_format = '%Y-%m-%d'
-        result = seq_dbutils.DataFrameUtils.apply_date_format(input_date, date_format)
-        expected = datetime.datetime.strptime(input_date, date_format).date()
+        result = DataFrameUtils.apply_date_format(input_date, date_format)
+        expected = datetime.date(2023, 10, 25)
         assert result == expected
 
     @staticmethod
@@ -35,75 +34,38 @@ class DataFrameUtilsTestClass(TestCase):
     def test_apply_date_format_error(mock_error, mock_exit):
         input_date = 'xxxxxxxxxxxx'
         date_format = '%Y-%m-%d'
-        result = seq_dbutils.DataFrameUtils.apply_date_format(input_date, date_format)
+        DataFrameUtils.apply_date_format(input_date, date_format)
         mock_error.assert_called_with("time data 'xxxxxxxxxxxx' does not match format '%Y-%m-%d'")
-        assert result == input_date
+        mock_exit.assert_called_once()
 
     @staticmethod
-    def test_apply_date_format_value_uncoverted():
-        input_date = '2020-09-18  00:00:00'
+    def test_apply_date_format_value_unconverted():
+        input_date = '2023-10-25  00:00:00'
         date_format = '%Y-%m-%d'
-        result = seq_dbutils.DataFrameUtils.apply_date_format(input_date, date_format)
-        expected = datetime.datetime.strptime('2020-09-18', date_format).date()
+        result = DataFrameUtils.apply_date_format(input_date, date_format)
+        expected = datetime.date(2023, 10, 25)
         assert result == expected
 
     @staticmethod
-    def test_apply_date_format_dash():
-        input_date = '-'
-        date_format = '%Y-%m-%d'
-        result = seq_dbutils.DataFrameUtils.apply_date_format(input_date, date_format)
-        assert not result
+    @patch('pandas.read_sql')
+    def test_get_db_table_col_list(mock_sql):
+        mock_engine = AlchemyMagicMock()
+        DataFrameUtils(mock_engine, 'Test').get_db_table_col_list()
+        mock_sql.assert_called_with('SHOW COLUMNS FROM Test;', mock_engine)
 
     @staticmethod
-    @patch('sys.exit')
-    @patch('logging.error')
-    def test_read_csv_with_header_mapping_no_file(mock_error, mock_exit):
-        file = 'fake.csv'
-        seq_dbutils.DataFrameUtils.read_csv_with_header_mapping(file, None)
-        mock_error.assert_called_with(f'File {file} does not exist. Exiting...')
-
-    @staticmethod
-    @patch('logging.info')
-    def test_read_csv_with_header_mapping_ok(mock_info):
-        file = join(DATA_DIR, 'test_read_csv_with_header_mapping_ok.csv')
-        name_mapping_dict = {'col2': 'rename_col2'}
-        df_result = seq_dbutils.DataFrameUtils.read_csv_with_header_mapping(file,
-                                                                            col_name_mapping_dict=name_mapping_dict)
-        mock_info.assert_called_with(f'Read file {file} with lines: %s', 3)
-        df_expected = pd.DataFrame(data={'col1': ['a', 'b', 'c'],
-                                         'rename_col2': [1, 2, 3]},
-                                   columns=['col1', 'rename_col2'])
-        assert df_result.equals(df_expected)
-
-    @staticmethod
-    @patch('logging.info')
-    def test_read_csv_with_header_mapping_no_dict(mock_info):
-        file = join(DATA_DIR, 'test_read_csv_with_header_mapping_ok.csv')
-        df_result = seq_dbutils.DataFrameUtils.read_csv_with_header_mapping(file)
-        mock_info.assert_called_with(f'Read file {file} with lines: %s', 3)
-        df_expected = pd.DataFrame(data={'col1': ['a', 'b', 'c'],
-                                         'col2': [1, 2, 3]},
-                                   columns=['col1', 'col2'])
-        assert df_result.equals(df_expected)
-
-    @staticmethod
-    @patch('seq_dbutils.DataFrameUtils.apply_date_format')
-    def test_format_date_cols(mock_apply):
-        df = pd.DataFrame(data={'col1': ['a', 'b'],
-                                'col2': ['2021-09-16', '2021-09-17']},
-                          columns=['col1', 'col2'])
-        date_col_list = ['col2']
-        seq_dbutils.DataFrameUtils.format_date_cols(df, date_col_list)
-        mock_apply.assert_has_calls([call('2021-09-16', '%Y-%m-%d'), call('2021-09-17', '%Y-%m-%d')])
-
-    @staticmethod
-    def test_format_date_cols_no_date_col():
-        df = pd.DataFrame(data={'col1': ['a', 'b'],
-                                'col2': ['2021-09-16', '2021-09-17']},
-                          columns=['col1', 'col2'])
-        date_col_list = ['col3']
-        df_result = seq_dbutils.DataFrameUtils.format_date_cols(df, date_col_list)
-        df_expected = pd.DataFrame(data={'col1': ['a', 'b'],
-                                         'col2': ['2021-09-16', '2021-09-17']},
-                                   columns=['col1', 'col2'])
-        assert df_result.equals(df_expected)
+    @patch('seq_dbutils.DataFrameUtils.get_db_table_col_list', return_value=['col1', 'col3'])
+    def test_create_db_table_dataframe(mock_get):
+        mock_engine = AlchemyMagicMock()
+        df = pd.DataFrame(data={
+            'col1': ['a', 'b', None],
+            'col2': ['some data', 'some more data', None],
+            'col3': [None, None, None],
+        }, columns=['col1', 'col2', 'col3'])
+        df_result = DataFrameUtils(mock_engine, 'Test').create_db_table_dataframe(df)
+        df_expected = pd.DataFrame(data={
+            'col1': ['a', 'b'],
+            'col3': [None, None],
+        }, columns=['col1', 'col3'])
+        mock_get.assert_called_once()
+        pd.testing.assert_frame_equal(df_result, df_expected)

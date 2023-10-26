@@ -18,18 +18,16 @@ class ArgsTestClass(TestCase):
         Config.initialize(file)
         mock_exit.assert_called_once()
 
-    @staticmethod
     @patch('logging.info')
     @patch('configparser.ConfigParser.read')
-    def test_initialize_ok(mock_read, mock_info):
+    def test_initialize_ok(self, mock_read, mock_info):
         file = join(DATA_DIR, 'test_initialize_ok.ini')
         Config.initialize(file)
         mock_read.assert_called_once_with(file)
 
-    @staticmethod
     @patch('logging.info')
     @patch('configparser.ConfigParser.get')
-    def test_get_section_config(mock_get, mock_info):
+    def test_get_section_config(self, mock_get, mock_info):
         required_section = 'Mock'
         required_key = 'mock'
         Config.get_section_config(required_section, required_key)
@@ -51,7 +49,8 @@ class ArgsTestClass(TestCase):
 
     @staticmethod
     @patch('logging.error')
+    @patch('logging.info')
     @patch('sys.exit')
-    def test_get_db_config_fail(mock_exit, mock_error):
+    def test_get_db_config_fail(mock_exit, mock_info, mock_error):
         Config.get_db_config('error')
         mock_exit.assert_called_once()

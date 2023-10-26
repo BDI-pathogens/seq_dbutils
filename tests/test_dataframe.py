@@ -24,8 +24,9 @@ class DataFrameUtilsTestClass(TestCase):
         assert result == expected
 
     @staticmethod
+    @patch('logging.error')
     @patch('sys.exit')
-    def test_apply_date_format_error(mock_exit):
+    def test_apply_date_format_error(mock_exit, mock_error):
         input_date = 'xxxxxxxxxxxx'
         date_format = '%Y-%m-%d'
         DataFrameUtils.apply_date_format(input_date, date_format)

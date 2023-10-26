@@ -17,16 +17,19 @@ class ViewTestClass(TestCase):
         self.view_filepath = join(DATA_DIR, f'{self.view_name}.sql')
         self.view = View(self.view_filepath, self.mock_instance)
 
-    def test_drop_view_if_exists(self):
+    @patch('logging.info')
+    def test_drop_view_if_exists(self, mock_info):
         self.view.drop_view_if_exists(self.mock_instance, self.view_name)
         sql = f'DROP VIEW IF EXISTS {self.view_name};'
         self.mock_instance.execute.assert_called_once_with(sql)
 
-    def test_create_view(self):
+    @patch('logging.info')
+    def test_create_view(self, mock_info):
         self.view.create_view()
         sql = f'CREATE VIEW {self.view_name} AS \nSELECT * FROM Pt;'
         self.mock_instance.execute.assert_called_once_with(sql)
 
-    def test_drop_and_create_view(self):
+    @patch('logging.info')
+    def test_drop_and_create_view(self, mock_info):
         self.view.drop_and_create_view()
         self.assertEqual(self.mock_instance.execute.call_count, 2)

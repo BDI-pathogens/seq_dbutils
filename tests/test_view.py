@@ -22,6 +22,7 @@ class ViewTestClass(TestCase):
         view = seq_dbutils.View(view_filepath, mock_instance)
         view.drop_view_if_exists(mock_instance, view_name)
         sql = f'DROP VIEW IF EXISTS {view_name};'
+        mock_info.assert_called_with(sql)
         mock_instance.execute.assert_called_with(sql)
 
     @patch('logging.info')
@@ -33,6 +34,7 @@ class ViewTestClass(TestCase):
         view = seq_dbutils.View(view_filepath, mock_instance)
         view.create_view()
         sql = f'CREATE VIEW {view_name} AS \nSELECT * FROM Pt;'
+        mock_info.assert_called_with(sql)
         mock_instance.execute.assert_called_with(sql)
 
     @patch('logging.info')

@@ -11,6 +11,7 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 class DataFrameUtils:
 
     def __init__(self, engine, tablename):
+        assert isinstance(engine, Engine)
         assert isinstance(tablename, str)
         self.engine = engine
         self.tablename = tablename

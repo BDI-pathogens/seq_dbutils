@@ -5,6 +5,7 @@ from unittest import TestCase
 import pandas as pd
 from mock import patch
 from mock_alchemy.mocking import AlchemyMagicMock
+from sqlalchemy.engine import Engine
 
 from seq_dbutils import DataFrameUtils
 
@@ -46,14 +47,14 @@ class DataFrameUtilsTestClass(TestCase):
     @staticmethod
     @patch('pandas.read_sql')
     def test_get_db_table_col_list(mock_sql):
-        mock_engine = AlchemyMagicMock()
+        mock_engine = AlchemyMagicMock(spec=Engine)
         DataFrameUtils(mock_engine, 'Test').get_db_table_col_list()
         mock_sql.assert_called_with('SHOW COLUMNS FROM Test;', mock_engine)
 
     @staticmethod
     @patch('seq_dbutils.DataFrameUtils.get_db_table_col_list', return_value=['col1', 'col3'])
     def test_create_db_table_dataframe(mock_get):
-        mock_engine = AlchemyMagicMock()
+        mock_engine = AlchemyMagicMock(spec=Engine)
         df = pd.DataFrame(data={
             'col1': ['a', 'b', None],
             'col2': ['some data', 'some more data', None],

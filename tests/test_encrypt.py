@@ -9,8 +9,7 @@ import seq_dbutils
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
-THIS_DIR = dirname(abspath(__file__))
-DATA_DIR = join(THIS_DIR, 'data')
+DATA_DIR = join(dirname(abspath(__file__)), 'data')
 TEST_BIN_FILE = join(DATA_DIR, 'test_encrypt.bin')
 
 seq_dbutils.encrypt.BIN_FILE = TEST_BIN_FILE

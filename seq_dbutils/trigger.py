@@ -9,7 +9,6 @@ class Trigger:
     def __init__(self, trigger_filepath, session_instance):
         assert isfile(trigger_filepath)
         assert hasattr(session_instance, 'execute')
-
         self.trigger_filepath = trigger_filepath
         self.session_instance = session_instance
         self.trigger_name = splitext(basename(self.trigger_filepath))[0]

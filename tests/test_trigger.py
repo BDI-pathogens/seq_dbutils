@@ -2,13 +2,13 @@ import logging
 from os.path import abspath, dirname, join
 from unittest import TestCase
 
-import seq_dbutils
 from mock import patch
+
+import seq_dbutils
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
-THIS_DIR = dirname(abspath(__file__))
-DATA_DIR = join(THIS_DIR, 'data')
+DATA_DIR = join(dirname(abspath(__file__)), 'data')
 
 
 class TriggerTestClass(TestCase):

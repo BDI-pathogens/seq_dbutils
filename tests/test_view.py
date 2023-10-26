@@ -2,13 +2,13 @@ import logging
 from os.path import abspath, dirname, join
 from unittest import TestCase
 
-import seq_dbutils
 from mock import patch
+
+import seq_dbutils
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
-THIS_DIR = dirname(abspath(__file__))
-DATA_DIR = join(THIS_DIR, 'data')
+DATA_DIR = join(dirname(abspath(__file__)), 'data')
 
 
 class ViewTestClass(TestCase):
@@ -20,7 +20,7 @@ class ViewTestClass(TestCase):
         view_name = 'test_view'
         view_filepath = join(DATA_DIR, f'{view_name}.sql')
         view = seq_dbutils.View(view_filepath, mock_instance)
-        view.drop_view_if_exists()
+        view.drop_view_if_exists(mock_instance, view_name)
         sql = f'DROP VIEW IF EXISTS {view_name};'
         mock_instance.execute.assert_called_with(sql)
 

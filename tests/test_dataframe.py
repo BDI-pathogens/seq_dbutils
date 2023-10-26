@@ -1,17 +1,14 @@
 import datetime
 import logging
-from os.path import abspath, dirname, join
 from unittest import TestCase
 
 import pandas as pd
-from mock import patch, call
+from mock import patch
 from mock_alchemy.mocking import AlchemyMagicMock
 
 from seq_dbutils import DataFrameUtils
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
-
-DATA_DIR = join(dirname(abspath(__file__)), 'data')
 
 
 class DataFrameUtilsTestClass(TestCase):

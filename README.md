@@ -1,6 +1,6 @@
 # seq_dbutils
 
-[![PPython 3.7 to 3.10](https://github.com/BDI-pathogens/seq_dbutils/actions/workflows/python-versions.yml/badge.svg)](https://github.com/BDI-pathogens/seq_dbutils/actions/workflows/python-versions.yml)
+[![Python 3.9 to 3.12](https://github.com/BDI-pathogens/seq_dbutils/actions/workflows/python-versions.yml/badge.svg)](https://github.com/BDI-pathogens/seq_dbutils/actions/workflows/python-versions.yml)
 [![Coverage](https://github.com/BDI-pathogens/seq_dbutils/actions/workflows/coverage.yml/badge.svg)](https://github.com/BDI-pathogens/seq_dbutils/actions/workflows/coverage.yml)
 [![codecov](https://codecov.io/gh/BDI-pathogens/seq_dbutils/branch/main/graph/badge.svg?token=189LXC6MG3)](undefined)
 [![PyPI version](https://badge.fury.io/py/seq-dbutils.svg)](https://badge.fury.io/py/seq-dbutils)

@@ -7,21 +7,23 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 class View:
 
     def __init__(self, view_filepath, session_instance):
+        # TODO
+        print(type(session_instance))
         assert isfile(view_filepath)
         assert hasattr(session_instance, 'execute')
-
         self.view_filepath = view_filepath
         self.session_instance = session_instance
         self.view_name = splitext(basename(self.view_filepath))[0]
 
     def drop_and_create_view(self):
-        self.drop_view_if_exists()
+        self.drop_view_if_exists(self.session_instance, self.view_name)
         self.create_view()
 
-    def drop_view_if_exists(self):
-        drop_sql = f'DROP VIEW IF EXISTS {self.view_name};'
+    @staticmethod
+    def drop_view_if_exists(session_instance, view_name):
+        drop_sql = f'DROP VIEW IF EXISTS {view_name};'
         logging.info(drop_sql)
-        self.session_instance.execute(drop_sql)
+        session_instance.execute(drop_sql)
 
     def create_view(self):
         with open(self.view_filepath, 'r') as reader:

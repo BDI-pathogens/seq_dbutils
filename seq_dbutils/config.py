@@ -30,7 +30,6 @@ class Config:
             host = Config.get_section_config(required_section, 'host')
             db = Config.get_section_config(required_section, 'db')
             return user, key, host, db
-
         except Exception as ex:
             logging.error(str(ex))
             sys.exit(1)

@@ -18,10 +18,10 @@ class Connection:
         self.host = host
         self.db = db
 
-    def create_sql_engine(self, sql_logging=False):
+    def create_sql_engine(self, connector_type='mysqlconnector', sql_logging=False):
         try:
             logging.info(f'Connecting to {self.db} on host {self.host}')
-            conn_str = f'mysql+mysqlconnector://{self.user}:{self.pwd}@{self.host}/{self.db}'
+            conn_str = f'mysql+{connector_type}://{self.user}:{self.pwd}@{self.host}/{self.db}'
             sql_engine = sqlalchemy.create_engine(conn_str, echo=sql_logging)
             return sql_engine
         except Exception as ex:

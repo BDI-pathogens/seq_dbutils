@@ -15,8 +15,9 @@ seq_dbutils.encrypt.BIN_FILE = TEST_BIN_FILE
 class EncryptTestClass(TestCase):
 
     @staticmethod
+    @patch('logging.info')
     @patch('seq_dbutils.encrypt.getpass')
-    def test_initialize(mock_pass):
+    def test_initialize(mock_pass, mock_info):
         mock_pass.return_value = 'password'
         seq_dbutils.Encrypt.initialize()
         assert isfile(TEST_BIN_FILE)

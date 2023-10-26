@@ -7,8 +7,6 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 class View:
 
     def __init__(self, view_filepath, session_instance):
-        # TODO
-        print(type(session_instance))
         assert isfile(view_filepath)
         assert hasattr(session_instance, 'execute')
         self.view_filepath = view_filepath

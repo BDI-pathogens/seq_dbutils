@@ -26,13 +26,15 @@ class TableTestClass(TestCase):
         self.mock_engine = AlchemyMagicMock(spec=Engine)
         self.table = Table(self.mock_engine, MockTable)
 
+    @patch('logging.info')
     @patch('sqlalchemy.schema.Table.drop')
-    def test_drop_table(self, mock_drop):
+    def test_drop_table(self, mock_drop, mock_info):
         self.table.drop_table()
         mock_drop.assert_called_once_with(self.mock_engine, check_first=True)
 
+    @patch('logging.info')
     @patch('sqlalchemy.schema.Table.create')
-    def test_create_table(self, mock_create):
+    def test_create_table(self, mock_create, mock_info):
         self.table.create_table()
         mock_create.assert_called_once_with(self.mock_engine, check_first=True)
 

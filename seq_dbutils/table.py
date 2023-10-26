@@ -14,7 +14,6 @@ class Table:
         self.table_class = table_class
 
     def drop_table(self):
-        print('DROPPING TABLE........')
         logging.info(f"Dropping table '{self.table_class.__tablename__}'")
         self.table_class.__table__.drop(self.engine, check_first=True)
 

@@ -27,7 +27,7 @@ class TableTestClass(TestCase):
         self.table = Table(self.mock_engine, MockTable)
 
     @patch('sqlalchemy.schema.Table.drop')
-    def test_create_table(self, mock_drop):
+    def test_drop_table(self, mock_drop):
         self.table.drop_table()
         mock_drop.assert_called_once_with(self.mock_engine, check_first=True)
 
@@ -35,3 +35,4 @@ class TableTestClass(TestCase):
     def test_create_table(self, mock_create):
         self.table.create_table()
         mock_create.assert_called_once_with(self.mock_engine, check_first=True)
+

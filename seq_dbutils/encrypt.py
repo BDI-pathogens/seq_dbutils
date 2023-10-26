@@ -14,8 +14,7 @@ class Encrypt:
 
     @classmethod
     def initialize(cls):
-        password = getpass()
-        password = password.encode()
+        password = getpass().encode()
         key = Fernet.generate_key()
         cipher_suite = Fernet(key)
         ciphered_text = cipher_suite.encrypt(password)  # Password required in bytes

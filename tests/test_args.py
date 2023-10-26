@@ -1,9 +1,6 @@
-import logging
 from unittest import TestCase
 
 from seq_dbutils import Args
-
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 class ArgsTestClass(TestCase):

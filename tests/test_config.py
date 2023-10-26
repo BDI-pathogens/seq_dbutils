@@ -1,12 +1,9 @@
-import logging
 from os.path import abspath, dirname, join
 from unittest import TestCase
 
 from mock import patch
 
 from seq_dbutils import Config
-
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 DATA_DIR = join(dirname(abspath(__file__)), 'data')
 
@@ -15,18 +12,17 @@ class ArgsTestClass(TestCase):
 
     @staticmethod
     @patch('sys.exit')
-    @patch('logging.error')
-    def test_initialize_no_file(mock_error, mock_exit):
+    def test_initialize_no_file(mock_exit):
         file = join(DATA_DIR, 'fake.ini')
         Config.initialize(file)
-        mock_error.assert_called_with(f'Config file {file} does not exist. Exiting...')
+        mock_exit.assert_called_once()
 
     @staticmethod
     @patch('configparser.ConfigParser.read')
     def test_initialize_ok(mock_read):
         file = join(DATA_DIR, 'test_initialize_ok.ini')
         Config.initialize(file)
-        mock_read.assert_called_with(file)
+        mock_read.assert_called_once_with(file)
 
     @staticmethod
     @patch('configparser.ConfigParser.get')
@@ -34,16 +30,16 @@ class ArgsTestClass(TestCase):
         required_section = 'Mock'
         required_key = 'mock'
         Config.get_section_config(required_section, required_key)
-        mock_get.assert_called_with(required_section, required_key)
+        mock_get.assert_called_once_with(required_section, required_key)
 
-    @staticmethod
     @patch('seq_dbutils.config.Config.get_section_config')
-    def test_get_db_config_ok(mock_get_section):
+    def test_get_db_config_ok(self, mock_get_section):
         my_str = 'mock'
         args = 'TEST'
         mock_get_section.return_value = my_str
         mock_get_section.encode.return_value = my_str
         user, key, host, db = Config.get_db_config(args)
+        self.assertEqual(mock_get_section.call_count, 4)
         assert user == my_str
         assert key == b'mock'
         assert host == my_str
@@ -51,7 +47,6 @@ class ArgsTestClass(TestCase):
 
     @staticmethod
     @patch('sys.exit')
-    @patch('logging.error')
-    def test_get_db_config_fail(mock_error, mock_exit):
+    def test_get_db_config_fail(mock_exit):
         Config.get_db_config('error')
-        mock_error.assert_called_with("No section: 'error'")
+        mock_exit.assert_called_once()

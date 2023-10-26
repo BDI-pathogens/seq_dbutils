@@ -3,11 +3,11 @@ import logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
-class Database:
+class Session:
 
     def __init__(self, session_instance):
-        assert hasattr(session_instance, 'execute')
         assert hasattr(session_instance, 'commit')
+        assert hasattr(session_instance, 'execute')
         self.session_instance = session_instance
 
     def commit_changes(self, commit):

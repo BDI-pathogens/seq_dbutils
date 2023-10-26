@@ -13,7 +13,7 @@ class Decrypt:
         cipher_suite = Fernet(key)
         with open(BIN_FILE, 'rb') as file_object:
             for line in file_object:
-                encryptedpwd = line
-        uncipher_text = (cipher_suite.decrypt(encryptedpwd))
-        plain_text_encryptedpassword = bytes(uncipher_text).decode("utf-8")  # convert to string
-        return plain_text_encryptedpassword
+                pwd_encrypted = line
+        pwd_decrypted = cipher_suite.decrypt(pwd_encrypted)
+        pwd_plain_text = bytes(pwd_decrypted).decode("utf-8")
+        return pwd_plain_text

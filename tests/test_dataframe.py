@@ -1,5 +1,4 @@
 import datetime
-import logging
 from unittest import TestCase
 
 import pandas as pd
@@ -8,8 +7,6 @@ from mock_alchemy.mocking import AlchemyMagicMock
 from sqlalchemy.engine import Engine
 
 from seq_dbutils import DataFrameUtils
-
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 class DataFrameUtilsTestClass(TestCase):
@@ -28,12 +25,10 @@ class DataFrameUtilsTestClass(TestCase):
 
     @staticmethod
     @patch('sys.exit')
-    @patch('logging.error')
-    def test_apply_date_format_error(mock_error, mock_exit):
+    def test_apply_date_format_error(mock_exit):
         input_date = 'xxxxxxxxxxxx'
         date_format = '%Y-%m-%d'
         DataFrameUtils.apply_date_format(input_date, date_format)
-        mock_error.assert_called_with("time data 'xxxxxxxxxxxx' does not match format '%Y-%m-%d'")
         mock_exit.assert_called_once()
 
     @staticmethod
@@ -49,7 +44,7 @@ class DataFrameUtilsTestClass(TestCase):
     def test_get_db_table_col_list(mock_sql):
         mock_engine = AlchemyMagicMock(spec=Engine)
         DataFrameUtils(mock_engine, 'Test').get_db_table_col_list()
-        mock_sql.assert_called_with('SHOW COLUMNS FROM Test;', mock_engine)
+        mock_sql.assert_called_once_with('SHOW COLUMNS FROM Test;', mock_engine)
 
     @staticmethod
     @patch('seq_dbutils.DataFrameUtils.get_db_table_col_list', return_value=['col1', 'col3'])

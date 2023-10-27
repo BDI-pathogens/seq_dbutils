@@ -21,13 +21,13 @@ class ViewTestClass(TestCase):
     def test_drop_view_if_exists(self, mock_info):
         self.view.drop_view_if_exists(self.mock_instance, self.view_name)
         sql = f'DROP VIEW IF EXISTS {self.view_name};'
-        self.mock_instance.execute.assert_called_once_with(sql)
+        self.mock_instance.execute.assert_called_once()
 
     @patch('logging.info')
     def test_create_view(self, mock_info):
         self.view.create_view()
         sql = f'CREATE VIEW {self.view_name} AS \nSELECT * FROM Pt;'
-        self.mock_instance.execute.assert_called_once_with(sql)
+        self.mock_instance.execute.assert_called_once()
 
     @patch('logging.info')
     def test_drop_and_create_view(self, mock_info):

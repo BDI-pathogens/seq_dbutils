@@ -1,5 +1,7 @@
 import logging
 
+from sqlalchemy.sql import text
+
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
@@ -19,4 +21,4 @@ class Session:
 
     def log_and_execute_sql(self, sql):
         logging.info(sql)
-        self.session_instance.execute(sql)
+        self.session_instance.execute(text(sql))

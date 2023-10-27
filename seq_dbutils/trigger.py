@@ -1,6 +1,8 @@
 import logging
 from os.path import isfile, splitext, basename
 
+from sqlalchemy.sql import text
+
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
@@ -20,10 +22,10 @@ class Trigger:
     def drop_trigger_if_exists(self):
         drop_sql = f'DROP TRIGGER IF EXISTS {self.trigger_name};'
         logging.info(drop_sql)
-        self.session_instance.execute(drop_sql)
+        self.session_instance.execute(text(drop_sql))
 
     def create_trigger(self):
         with open(self.trigger_filepath, 'r') as reader:
             create_sql = reader.read()
             logging.info(create_sql)
-            self.session_instance.execute(create_sql)
+            self.session_instance.execute(text(create_sql))

@@ -15,8 +15,8 @@ class Table:
 
     def drop_table(self):
         logging.info(f"Dropping table '{self.table_class.__tablename__}'")
-        self.table_class.__table__.drop(self.engine, check_first=True)
+        self.table_class.__table__.drop(self.engine)
 
     def create_table(self):
         logging.info(f"Creating table '{self.table_class.__tablename__}'")
-        self.table_class.__table__.create(self.engine, check_first=True)
+        self.table_class.__table__.create(self.engine)

@@ -1,5 +1,4 @@
-from unittest import TestCase
-
+import pytest
 from mock import patch
 from mock_alchemy.mocking import AlchemyMagicMock
 from sqlalchemy import Column, String, Float
@@ -20,21 +19,26 @@ class MockTable(Table, BASE):
     mysql_charset = 'utf8'
 
 
-class TableTestClass(TestCase):
+@pytest.fixture(scope='session')
+def engine_fixture():
+    return AlchemyMagicMock(spec=Engine)
 
-    def setUp(self):
-        self.mock_engine = AlchemyMagicMock(spec=Engine)
-        self.table = Table(self.mock_engine, MockTable)
 
-    @patch('logging.info')
-    @patch('sqlalchemy.schema.Table.drop')
-    def test_drop_table(self, mock_drop, mock_info):
-        self.table.drop_table()
-        mock_drop.assert_called_once_with(self.mock_engine)
+@pytest.fixture(scope='session')
+def table_fixture(engine_fixture):
+    mock_engine = engine_fixture
+    return Table(mock_engine, MockTable)
 
-    @patch('logging.info')
-    @patch('sqlalchemy.schema.Table.create')
-    def test_create_table(self, mock_create, mock_info):
-        self.table.create_table()
-        mock_create.assert_called_once_with(self.mock_engine)
 
+def test_drop_table(engine_fixture, table_fixture):
+    with patch('logging.info'):
+        with patch('sqlalchemy.schema.Table.drop') as mock_drop:
+            table_fixture.drop_table()
+            mock_drop.assert_called_once_with(engine_fixture)
+
+
+def test_create_table(engine_fixture, table_fixture):
+    with patch('logging.info'):
+        with patch('sqlalchemy.schema.Table.create') as mock_create:
+            table_fixture.create_table()
+            mock_create.assert_called_once_with(engine_fixture)

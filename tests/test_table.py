@@ -20,25 +20,25 @@ class MockTable(Table, BASE):
 
 
 @pytest.fixture(scope='session')
-def engine_fixture():
+def engine():
     return AlchemyMagicMock(spec=Engine)
 
 
 @pytest.fixture(scope='session')
-def table_fixture(engine_fixture):
-    mock_engine = engine_fixture
+def table(engine):
+    mock_engine = engine
     return Table(mock_engine, MockTable)
 
 
-def test_drop_table(engine_fixture, table_fixture):
+def test_drop_table(engine, table):
     with patch('logging.info'):
         with patch('sqlalchemy.schema.Table.drop') as mock_drop:
-            table_fixture.drop_table()
-            mock_drop.assert_called_once_with(engine_fixture)
+            table.drop_table()
+            mock_drop.assert_called_once_with(engine)
 
 
-def test_create_table(engine_fixture, table_fixture):
+def test_create_table(engine, table):
     with patch('logging.info'):
         with patch('sqlalchemy.schema.Table.create') as mock_create:
-            table_fixture.create_table()
-            mock_create.assert_called_once_with(engine_fixture)
+            table.create_table()
+            mock_create.assert_called_once_with(engine)

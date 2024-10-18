@@ -1,5 +1,5 @@
 import datetime
-import pytest
+
 import pandas as pd
 from mock import patch
 from mock_alchemy.mocking import AlchemyMagicMock

@@ -6,24 +6,24 @@ from seq_dbutils import Session
 
 
 @pytest.fixture(scope='session')
-def alchemy_fixture():
+def session():
     return AlchemyMagicMock()
 
 
-def test_log_and_execute_sql(alchemy_fixture):
+def test_log_and_execute_sql(session):
     with patch('logging.info'):
         sql = 'SELECT * FROM test;'
-        Session(alchemy_fixture).log_and_execute_sql(sql)
-        alchemy_fixture.execute.assert_called_once()
+        Session(session).log_and_execute_sql(sql)
+        session.execute.assert_called_once()
 
 
-def test_commit_changes_false(alchemy_fixture):
+def test_commit_changes_false(session):
     with patch('logging.info'):
-        Session(alchemy_fixture).commit_changes(False)
-        alchemy_fixture.commit.assert_not_called()
+        Session(session).commit_changes(False)
+        session.commit.assert_not_called()
 
 
-def test_commit_changes_true(alchemy_fixture):
+def test_commit_changes_true(session):
     with patch('logging.info'):
-        Session(alchemy_fixture).commit_changes(True)
-        alchemy_fixture.commit.assert_called_once()
+        Session(session).commit_changes(True)
+        session.commit.assert_called_once()

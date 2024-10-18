@@ -8,31 +8,31 @@ from seq_dbutils import Trigger
 DATA_DIR = join(dirname(abspath(__file__)), 'data')
 
 
-@pytest.fixture(scope='function')
-def instance_fixture():
+@pytest.fixture()
+def instance():
     with patch('sqlalchemy.orm.sessionmaker') as mock_session:
         return mock_session()
 
 
-@pytest.fixture(scope='function')
-def trigger_fixture(instance_fixture):
+@pytest.fixture()
+def trigger(instance):
     trigger_filepath = join(DATA_DIR, 'test_trigger.sql')
-    return Trigger(trigger_filepath, instance_fixture)
+    return Trigger(trigger_filepath, instance)
 
 
-def test_drop_trigger_if_exists(instance_fixture, trigger_fixture):
+def test_drop_trigger_if_exists(instance, trigger):
     with patch('logging.info'):
-        trigger_fixture.drop_trigger_if_exists()
-        instance_fixture.execute.assert_called_once()
+        trigger.drop_trigger_if_exists()
+        instance.execute.assert_called_once()
 
 
-def test_create_trigger(instance_fixture, trigger_fixture):
+def test_create_trigger(instance, trigger):
     with patch('logging.info'):
-        trigger_fixture.create_trigger()
-        instance_fixture.execute.assert_called_once()
+        trigger.create_trigger()
+        instance.execute.assert_called_once()
 
 
-def test_drop_and_create_trigger(instance_fixture, trigger_fixture):
+def test_drop_and_create_trigger(instance, trigger):
     with patch('logging.info'):
-        trigger_fixture.drop_and_create_trigger()
-        assert instance_fixture.execute.call_count == 2
+        trigger.drop_and_create_trigger()
+        assert instance.execute.call_count == 2

@@ -18,14 +18,15 @@ class MockTable(BASE):
     mysql_charset = 'utf8'
 
 
-@pytest.fixture(scope='session')
-@patch('sqlalchemy.orm.sessionmaker')
-def session_fixture(mock_session):
-    return mock_session()
+@pytest.fixture()
+def instance():
+    with patch('sqlalchemy.orm.sessionmaker') as mock_session:
+        return mock_session()
 
 
+
 @pytest.fixture(scope='session')
-def dataframe_fixture():
+def dataframe():
     df_data = pd.DataFrame(data={'id1': ['a', 'b', 'c'],
                                  'id2': ['d', 'b', 'f'],
                                  'id3': ['g', 'h', 'i']},
@@ -33,49 +34,49 @@ def dataframe_fixture():
     return df_data
 
 
-def test_bulk_insert_df_table_empty(session_fixture):
+def test_bulk_insert_df_table_empty(instance):
     df = pd.DataFrame()
     with patch('logging.info') as mock_info:
-        Load(df, session_fixture, MockTable).bulk_insert_df_table()
+        Load(df, instance, MockTable).bulk_insert_df_table()
         mock_info.assert_called_with('Skipping bulk insert for table \'Mock\' and empty dataframe')
 
 
-def test_bulk_insert_df_table_ok(session_fixture, dataframe_fixture):
+def test_bulk_insert_df_table_ok(instance, dataframe):
     with patch('logging.info'):
-        Load(dataframe_fixture, session_fixture, MockTable).bulk_insert_df_table()
-        session_fixture.bulk_insert_mappings.assert_called_once()
+        Load(dataframe, instance, MockTable).bulk_insert_df_table()
+        instance.bulk_insert_mappings.assert_called_once()
 
 
-def test_bulk_insert_df_table_fail(session_fixture, dataframe_fixture):
+def test_bulk_insert_df_table_fail(instance, dataframe):
     with patch('logging.info'):
         with patch('logging.error'):
             with patch('sys.exit') as mock_exit:
-                session_fixture.bulk_insert_mappings = Mock(side_effect=Exception())
-                session_fixture.rollback = Mock()
-                Load(dataframe_fixture, session_fixture, MockTable).bulk_insert_df_table()
-                session_fixture.rollback.assert_called_once()
+                instance.bulk_insert_mappings = Mock(side_effect=Exception())
+                instance.rollback = Mock()
+                Load(dataframe, instance, MockTable).bulk_insert_df_table()
+                instance.rollback.assert_called_once()
                 mock_exit.assert_called_once()
 
 
-def test_bulk_update_df_table_empty(session_fixture):
+def test_bulk_update_df_table_empty(instance):
     with patch('logging.info') as mock_info:
         df = pd.DataFrame()
-        Load(df, session_fixture, MockTable).bulk_update_df_table()
+        Load(df, instance, MockTable).bulk_update_df_table()
         mock_info.assert_called_with('Skipping bulk update for table \'Mock\' and empty dataframe')
 
 
-def test_bulk_update_df_table_ok(session_fixture, dataframe_fixture):
+def test_bulk_update_df_table_ok(instance, dataframe):
     with patch('logging.info'):
-        Load(dataframe_fixture, session_fixture, MockTable).bulk_update_df_table()
-        session_fixture.bulk_update_mappings.assert_called_once()
+        Load(dataframe, instance, MockTable).bulk_update_df_table()
+        instance.bulk_update_mappings.assert_called_once()
 
 
-def test_bulk_update_df_table_fail(session_fixture, dataframe_fixture):
+def test_bulk_update_df_table_fail(instance, dataframe):
     with patch('logging.info'):
         with patch('logging.error'):
             with patch('sys.exit') as mock_exit:
-                session_fixture.bulk_update_mappings = Mock(side_effect=Exception())
-                session_fixture.rollback = Mock()
-                Load(dataframe_fixture, session_fixture, MockTable).bulk_update_df_table()
-                session_fixture.rollback.assert_called_once()
+                instance.bulk_update_mappings = Mock(side_effect=Exception())
+                instance.rollback = Mock()
+                Load(dataframe, instance, MockTable).bulk_update_df_table()
+                instance.rollback.assert_called_once()
                 mock_exit.assert_called_once()

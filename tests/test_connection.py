@@ -18,8 +18,6 @@ def test_create_sql_engine_ok(connection):
 
 def test_create_sql_engine_fail(connection):
     with patch('logging.info'):
-        with patch('logging.error'):
-            with patch('sys.exit') as mock_exit:
-                with patch('sqlalchemy.create_engine', side_effect=Exception()):
-                    connection.create_sql_engine()
-                    mock_exit.assert_called_once()
+        with patch('sqlalchemy.create_engine', side_effect=Exception()):
+            with pytest.raises(Exception):
+                connection.create_sql_engine()

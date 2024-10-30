@@ -11,8 +11,8 @@ def session():
 
 
 def test_log_and_execute_sql(session):
+    sql = 'SELECT * FROM test;'
     with patch('logging.info'):
-        sql = 'SELECT * FROM test;'
         Session(session).log_and_execute_sql(sql)
         session.execute.assert_called_once()
 

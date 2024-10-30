@@ -1,5 +1,4 @@
 import logging
-import sys
 
 import pandas as pd
 
@@ -22,11 +21,10 @@ class Load:
                 logging.info(
                     f"Bulk inserting into table '{self.table_subclass.__tablename__}'. Number of rows: {len(self.df_table)}")
                 self.session_instance.bulk_insert_mappings(self.table_subclass, self.df_table.to_dict(orient='records'))
-            except Exception as ex:
+            except Exception:
                 logging.error('Failed to load data into database. Rolling back...')
                 self.session_instance.rollback()
-                logging.error(str(ex))
-                sys.exit(1)
+                raise
         else:
             logging.info(f"Skipping bulk insert for table '{self.table_subclass.__tablename__}' and empty dataframe")
 
@@ -36,10 +34,9 @@ class Load:
                 logging.info(
                     f"Bulk updating table '{self.table_subclass.__tablename__}'. Number of rows: {len(self.df_table)}")
                 self.session_instance.bulk_update_mappings(self.table_subclass, self.df_table.to_dict(orient='records'))
-            except Exception as ex:
+            except Exception:
                 logging.error('Failed to update data in database. Rolling back...')
                 self.session_instance.rollback()
-                logging.error(str(ex))
-                sys.exit(1)
+                raise
         else:
             logging.info(f"Skipping bulk update for table '{self.table_subclass.__tablename__}' and empty dataframe")

@@ -1,5 +1,4 @@
 import logging
-import sys
 
 import sqlalchemy
 
@@ -20,11 +19,7 @@ class Connection:
         self.connector_type = connector_type
 
     def create_sql_engine(self, sql_logging=False):
-        try:
-            logging.info(f'Connecting to {self.db} on host {self.host}')
-            conn_str = f'mysql+{self.connector_type}://{self.user}:{self.pwd}@{self.host}/{self.db}'
-            sql_engine = sqlalchemy.create_engine(conn_str, echo=sql_logging)
-            return sql_engine
-        except Exception as ex:
-            logging.error(str(ex))
-            sys.exit(1)
+        logging.info(f'Connecting to {self.db} on host {self.host}')
+        conn_str = f'mysql+{self.connector_type}://{self.user}:{self.pwd}@{self.host}/{self.db}'
+        sql_engine = sqlalchemy.create_engine(conn_str, echo=sql_logging)
+        return sql_engine

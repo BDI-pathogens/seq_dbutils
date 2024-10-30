@@ -1,5 +1,7 @@
+from configparser import NoOptionError
 from os.path import abspath, dirname, join
 
+import pytest
 from mock import patch
 
 from seq_dbutils import Config
@@ -7,49 +9,59 @@ from seq_dbutils import Config
 DATA_DIR = join(dirname(abspath(__file__)), 'data')
 
 
-@patch('logging.error')
-@patch('sys.exit')
-def test_initialize_no_file(mock_exit, mock_error):
-    file = join(DATA_DIR, 'fake.ini')
-    Config.initialize(file)
-    mock_exit.assert_called_once()
+def test_initialize_no_file():
+    with patch('configparser.ConfigParser.read', side_effect=FileNotFoundError()):
+        with pytest.raises(FileNotFoundError):
+            Config.initialize('fake.ini')
 
 
-@patch('logging.info')
-@patch('configparser.ConfigParser.read')
-def test_initialize_ok(mock_read, mock_info):
-    file = join(DATA_DIR, 'test_initialize_ok.ini')
-    Config.initialize(file)
-    mock_read.assert_called_once_with(file)
+def test_initialize_exception():
+    with patch('configparser.ConfigParser.read', side_effect=Exception()):
+        with pytest.raises(Exception):
+            Config.initialize('fake.ini')
 
 
-@patch('logging.info')
-@patch('configparser.ConfigParser.get')
-def test_get_section_config(mock_get, mock_info):
-    required_section = 'Mock'
-    required_key = 'mock'
-    Config.get_section_config(required_section, required_key)
-    mock_get.assert_called_once_with(required_section, required_key)
+def test_initialize_ok():
+    data = 'file_contents'
+    with patch('configparser.ConfigParser.read', return_value=data):
+        result = Config.initialize('fake.ini')
+        assert result == data
 
 
-@patch('logging.info')
-@patch('seq_dbutils.config.Config.get_section_config')
-def test_get_db_config_ok(mock_get_section, mock_info):
-    my_str = 'mock'
-    args = 'TEST'
-    mock_get_section.return_value = my_str
-    mock_get_section.encode.return_value = my_str
-    user, key, host, db = Config.get_db_config(args)
-    assert mock_get_section.call_count == 4
-    assert user == my_str
-    assert key == b'mock'
-    assert host == my_str
-    assert db == my_str
+def test_get_section_config_no_option():
+    required_section = 'SOME_SECTION'
+    required_key = 'some_key'
+    with patch('configparser.ConfigParser.get', side_effect=NoOptionError(required_section, required_key)):
+        with pytest.raises(NoOptionError):
+            Config.get_section_config(required_section, required_key)
 
 
-@patch('logging.error')
-@patch('logging.info')
-@patch('sys.exit')
-def test_get_db_config_fail(mock_exit, mock_info, mock_error):
-    Config.get_db_config('error')
-    mock_exit.assert_called_once()
+def test_get_section_config_exception():
+    required_section = 'SOME_SECTION'
+    required_key = 'some_key'
+    with patch('configparser.ConfigParser.get', side_effect=Exception()):
+        with pytest.raises(Exception):
+            Config.get_section_config(required_section, required_key)
+
+
+def test_get_section_config_ok():
+    required_section = 'SOME_SECTION'
+    required_key = 'some_key'
+    data = 'some_config'
+    with patch('configparser.ConfigParser.get', return_value=data):
+        result = Config.get_section_config(required_section, required_key)
+        assert result == data
+
+
+def test_get_db_config_ok():
+    result = 'some_config'
+    with patch('logging.info'):
+        with patch('seq_dbutils.config.Config.get_section_config') as mock_get_section:
+            mock_get_section.return_value = result
+            mock_get_section.encode.return_value = result
+            user, key, host, db = Config.get_db_config('SOME_SECTION')
+            assert mock_get_section.call_count == 4
+            assert user == result
+            assert key == b'some_config'
+            assert host == result
+            assert db == result

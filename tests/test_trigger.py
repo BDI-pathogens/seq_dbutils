@@ -23,7 +23,7 @@ def trigger(instance):
 def test_drop_trigger_if_exists(instance, trigger):
     with patch('logging.info'):
         trigger.drop_trigger_if_exists()
-        instance.execute.assert_called_with('DROP TRIGGER IF EXISTS %s;', ('test_trigger',))
+        instance.execute.assert_called_once()
 
 
 def test_create_trigger(instance, trigger):

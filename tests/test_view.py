@@ -23,7 +23,7 @@ def view(instance):
 def test_drop_view_if_exists(instance, view):
     with patch('logging.info'):
         view.drop_view_if_exists(instance, 'test_view')
-        instance.execute.assert_called_once()
+        instance.execute.assert_called_with('DROP VIEW IF EXISTS %s;', ('test_view',))
 
 
 def test_create_view(instance, view):

@@ -21,9 +21,8 @@ class View:
 
     @staticmethod
     def drop_view_if_exists(session_instance, view_name):
-        drop_sql = f'DROP VIEW IF EXISTS {view_name};'
-        logging.info(drop_sql)
-        session_instance.execute(text(drop_sql))
+        logging.info(f'DROP VIEW IF EXISTS {view_name}')
+        session_instance.execute('DROP VIEW IF EXISTS %s;', (view_name,))
 
     def create_view(self):
         with open(self.view_filepath, 'r') as reader:

@@ -20,9 +20,8 @@ class Trigger:
         self.create_trigger()
 
     def drop_trigger_if_exists(self):
-        drop_sql = f'DROP TRIGGER IF EXISTS {self.trigger_name};'
-        logging.info(drop_sql)
-        self.session_instance.execute(text(drop_sql))
+        logging.info(f'DROP TRIGGER IF EXISTS {self.trigger_name}')
+        self.session_instance.execute('DROP TRIGGER IF EXISTS %s;', (self.trigger_name,))
 
     def create_trigger(self):
         with open(self.trigger_filepath, 'r') as reader:

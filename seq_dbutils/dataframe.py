@@ -1,6 +1,4 @@
 import logging
-import sys
-from datetime import datetime
 
 import pandas as pd
 from sqlalchemy.engine import Engine
@@ -26,19 +24,3 @@ class DataFrameUtils:
         df_db_table = df.filter(db_table_col_list, axis=1)
         df_db_table = df_db_table.dropna(subset=df_db_table.columns, how='all')
         return df_db_table
-
-    @staticmethod
-    def apply_date_format(input_date, format_date):
-        if input_date:
-            format_time = format_date + ' %H:%M:%S'
-            try:
-                input_date = datetime.strptime(input_date, format_date).date()
-            except ValueError as ex:
-                if 'unconverted data remains:' in ex.args[0]:
-                    input_date = datetime.strptime(input_date, format_time).date()
-                else:
-                    logging.error(str(ex))
-                    sys.exit(1)
-        else:
-            input_date = None
-        return input_date

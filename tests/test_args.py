@@ -1,14 +1,14 @@
-from unittest import TestCase
+import pytest
 
 from seq_dbutils import Args
 
 
-class ArgsTestClass(TestCase):
+@pytest.fixture()
+def args():
+    return Args.initialize_args()
 
-    def setUp(self):
-        self.parser = Args.initialize_args()
 
-    def test_initialize_args(self):
-        parsed = self.parser.parse_args(['TEST'])
-        config = vars(parsed)['config'][0]
-        self.assertEqual(config, 'TEST')
+def test_initialize_args(args):
+    parsed = args.parse_args(['TEST'])
+    config = vars(parsed)['config'][0]
+    assert config == 'TEST'

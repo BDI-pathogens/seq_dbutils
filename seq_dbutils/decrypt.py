@@ -15,5 +15,5 @@ class Decrypt:
             for line in file_object:
                 pwd_encrypted = line
         pwd_decrypted = cipher_suite.decrypt(pwd_encrypted)
-        pwd_plain_text = bytes(pwd_decrypted).decode("utf-8")
+        pwd_plain_text = bytes(pwd_decrypted).decode('utf-8')
         return pwd_plain_text

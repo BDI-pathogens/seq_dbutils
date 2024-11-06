@@ -1,6 +1,5 @@
-from unittest import TestCase
-
 import pandas as pd
+import pytest
 from mock import patch, Mock
 from sqlalchemy import Column, String, Float
 from sqlalchemy.orm import declarative_base
@@ -19,54 +18,60 @@ class MockTable(BASE):
     mysql_charset = 'utf8'
 
 
-class LoadTestClass(TestCase):
+@pytest.fixture()
+def instance():
+    with patch('sqlalchemy.orm.sessionmaker') as mock_session:
+        return mock_session()
 
-    @patch('sqlalchemy.orm.sessionmaker')
-    def setUp(self, mock_session):
-        self.mock_instance = mock_session()
-        self.df_data = pd.DataFrame(data={'id1': ['a', 'b', 'c'],
-                                          'id2': ['d', 'b', 'f'],
-                                          'id3': ['g', 'h', 'i']},
-                                    columns=['id1', 'id2', 'id3'])
 
-    @patch('logging.info')
-    def test_bulk_insert_df_table_empty(self, mock_info):
-        df = pd.DataFrame()
-        Load(df, self.mock_instance, MockTable).bulk_insert_df_table()
+@pytest.fixture(scope='session')
+def dataframe():
+    df_data = pd.DataFrame(data={'id1': ['a', 'b', 'c'],
+                                 'id2': ['d', 'b', 'f'],
+                                 'id3': ['g', 'h', 'i']},
+                           columns=['id1', 'id2', 'id3'])
+    return df_data
+
+
+def test_bulk_insert_df_table_empty(instance):
+    df = pd.DataFrame()
+    with patch('logging.info') as mock_info:
+        Load(df, instance, MockTable).bulk_insert_df_table()
         mock_info.assert_called_with('Skipping bulk insert for table \'Mock\' and empty dataframe')
 
-    @patch('logging.info')
-    def test_bulk_insert_df_table_ok(self, mock_info):
-        Load(self.df_data, self.mock_instance, MockTable).bulk_insert_df_table()
-        self.mock_instance.bulk_insert_mappings.assert_called_once()
 
-    @patch('logging.error')
-    @patch('logging.info')
-    @patch('sys.exit')
-    def test_bulk_insert_df_table_fail(self, mock_exit, mock_info, mock_error):
-        self.mock_instance.bulk_insert_mappings = Mock(side_effect=Exception())
-        self.mock_instance.rollback = Mock()
-        Load(self.df_data, self.mock_instance, MockTable).bulk_insert_df_table()
-        self.mock_instance.rollback.assert_called_once()
-        mock_exit.assert_called_once()
+def test_bulk_insert_df_table_ok(instance, dataframe):
+    with patch('logging.info'):
+        Load(dataframe, instance, MockTable).bulk_insert_df_table()
+        instance.bulk_insert_mappings.assert_called_once()
 
-    @patch('logging.info')
-    def test_bulk_update_df_table_empty(self, mock_info):
-        df = pd.DataFrame()
-        Load(df, self.mock_instance, MockTable).bulk_update_df_table()
+
+def test_bulk_insert_df_table_exception(instance, dataframe):
+    instance.bulk_insert_mappings = Mock(side_effect=Exception())
+    instance.rollback = Mock()
+    with patch('logging.info'):
+        with pytest.raises(Exception):
+            Load(dataframe, instance, MockTable).bulk_insert_df_table()
+            instance.rollback.assert_called_once()
+
+
+def test_bulk_update_df_table_empty(instance):
+    df = pd.DataFrame()
+    with patch('logging.info') as mock_info:
+        Load(df, instance, MockTable).bulk_update_df_table()
         mock_info.assert_called_with('Skipping bulk update for table \'Mock\' and empty dataframe')
 
-    @patch('logging.info')
-    def test_bulk_update_df_table_ok(self, mock_info):
-        Load(self.df_data, self.mock_instance, MockTable).bulk_update_df_table()
-        self.mock_instance.bulk_update_mappings.assert_called_once()
 
-    @patch('logging.error')
-    @patch('logging.info')
-    @patch('sys.exit')
-    def test_bulk_update_df_table_fail(self, mock_exit, mock_info, mock_error):
-        self.mock_instance.bulk_update_mappings = Mock(side_effect=Exception())
-        self.mock_instance.rollback = Mock()
-        Load(self.df_data, self.mock_instance, MockTable).bulk_update_df_table()
-        self.mock_instance.rollback.assert_called_once()
-        mock_exit.assert_called_once()
+def test_bulk_update_df_table_ok(instance, dataframe):
+    with patch('logging.info'):
+        Load(dataframe, instance, MockTable).bulk_update_df_table()
+        instance.bulk_update_mappings.assert_called_once()
+
+
+def test_bulk_update_df_table_exception(instance, dataframe):
+    instance.bulk_update_mappings = Mock(side_effect=Exception())
+    instance.rollback = Mock()
+    with patch('logging.info'):
+        with pytest.raises(Exception):
+            Load(dataframe, instance, MockTable).bulk_update_df_table()
+            instance.rollback.assert_called_once()

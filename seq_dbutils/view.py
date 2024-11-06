@@ -21,7 +21,7 @@ class View:
 
     @staticmethod
     def drop_view_if_exists(session_instance, view_name):
-        logging.info(f'DROP VIEW IF EXISTS {view_name}')
+        logging.info(f'DROP VIEW IF EXISTS {view_name};')
         session_instance.execute('DROP VIEW IF EXISTS %s;', (view_name,))
 
     def create_view(self):

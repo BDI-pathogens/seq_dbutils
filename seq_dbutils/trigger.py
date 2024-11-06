@@ -20,7 +20,7 @@ class Trigger:
         self.create_trigger()
 
     def drop_trigger_if_exists(self):
-        logging.info(f'DROP TRIGGER IF EXISTS {self.trigger_name}')
+        logging.info(f'DROP TRIGGER IF EXISTS {self.trigger_name};')
         self.session_instance.execute('DROP TRIGGER IF EXISTS %s;', (self.trigger_name,))
 
     def create_trigger(self):

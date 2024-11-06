@@ -21,12 +21,12 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install coverage codecov mock mock_alchemy
+          pip install coverage codecov mock mock_alchemy pytest
           pip install .
 
       - name: Run coverage
         run: |
-          coverage run --source seq_dbutils -m unittest discover
+          coverage run --source seq_dbutils -m pytest
           coverage report -m
           coverage xml
 
